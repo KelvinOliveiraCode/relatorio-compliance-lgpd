@@ -1,0 +1,22 @@
+[project]
+name = "relatorio-compliance-lgpd"
+version = "0.1.0"
+description = "Mapeamento de dados pessoais e relatório de compliance LGPD"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+license = {text = "MIT"}
+authors = [{name = "Kelvin Oliveira"}]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[project.scripts]
+relatorio-lgpd = "relatorio_compliance_lgpd.mapeamento:main"
