@@ -1,93 +1,83 @@
 # relatorio-compliance-lgpd
 
-## Português (PT-BR)
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)   ![status: concluido](https://img.shields.io/badge/status-concluido-green)   ![licenca: MIT](https://img.shields.io/badge/licenca-MIT-blue)
 
-### O que faz
+## Resumo
 
-Mapeia campos de dados pessoais (nome, CPF, e-mail, telefone) em fontes sintéticas CSV e JSON em memória e gera um relatório de compliance LGPD com contagem, localização e classificação de risco (baixo / médio / alto).
+Projeto em Python desenvolvido como estudo de engenharia de software. Projeto funcional, relatorio-compliance-lgpd
 
-É um pacote Python puro, sem dependências externas. É determinístico: mesma entrada produz sempre a mesma saída, sem relógio, sem sorteio e sem rede.
+## Problema / por que existe
 
-### Como usar
+O projeto aborda um recorte pratico e automatiza uma tarefa que, feita manualmente, e repetitiva e propensa a erro. O foco esta em transformar dados ou processos em saida confiavel, com codigo legivel e testavel.
 
-No diretório raiz do projeto:
+## Arquitetura
 
-```
-python -m relatorio_compliance_lgpd.mapeamento
-```
+O codigo esta organizado por responsabilidade:
 
-Imprime o relatório no terminal. Para salvar em arquivo, use a função `salvar_relatorio` do pacote.
+- Entrada: leitura de arquivo, API, entrada do usuario ou captura de dados (dependendo do modulo).
+- Processamento: funcoes puras ou classes que aplicam regras de negocio, transformacao ou analise sobre os dados de entrada.
+- Saida: gravacao de arquivo, impressao em terminal, resposta HTTP ou geracao de relatorio.
 
-### Testes
+Quando aplicavel, a aplicacao separa a camada de acesso a dados da camada de logica de negocio, para que mudar a origem dos dados nao exija reescrever as regras.
 
-```
-python -m pytest -q
-```
+## Tecnologias
 
-Executa a suíte pytest (15 testes). Todos devem passar.
+- Python 3.x
+- (nenhum informado no repositorio)
 
-### Estrutura
+- Sem CI configurado neste repositorio.
 
-```
-pyproject.toml         # projeto Python (setuptools, layout src)
-src/relatorio_compliance_lgpd/mapeamento.py  # varredura e relatório LGPD
-src/relatorio_compliance_lgpd/__init__.py    # API pública
-tests/test_mapeamento.py                     # suíte pytest
-README.md                                      # este arquivo
-BRIEF.md                                       # entregas e verificação
-```
+O repositorio contem testes automatizados.
 
-### Licença
+## O que faz
 
-MIT.
+Projeto funcional, relatorio-compliance-lgpd
 
-### Autor
+## Como rodar
 
-Kelvin Oliveira.
-
----
-
-## English (EN)
-
-### What it does
-
-Maps personal data fields (name, CPF, e-mail, phone) in synthetic in-memory CSV and JSON sources and generates an LGPD compliance report with count, location, and risk classification (low / medium / high).
-
-It is a pure Python package with no external dependencies. It is deterministic: the same input always produces the same output, with no clock, no randomness, and no network.
-
-### How to use
-
-In the project root directory:
+Requisitos: Python 3.x instalado.
 
 ```
-python -m relatorio_compliance_lgpd.mapeamento
+# instalar dependencias (se houver requirements.txt)
+pip install -r requirements.txt
+
+# executar
+python main.py
+
+# executar testes
+pytest
 ```
 
-Prints the report to the terminal. To save to a file, use `salvar_relatorio` from the package.
+## Estrutura do projeto
 
-### Tests
+- src/ (2 arquivo(s))
+- tests/ (1 arquivo(s))
+- .gitignore, BRIEF.md, pyproject.toml, README.en.md, README.md
+
+
+## Trade-offs e decisões
+
+- Biblioteca padrao sempre que possivel, dependencias externas so quando o ganho justifica a manutencao.
+- Scripts executaveis direto, sem build step complexo, para facilitar a reproducao.
+- Logica separada de entrada/saida para manter as funcoes de processamento testaveis.
+
+## Limitações conhecidas
+
+- Escopo limitado ao recorte descrito; nao e uma plataforma completa.
+- Depende de Python 3.x no ambiente de execucao.
+
+
+## Testes
 
 ```
-python -m pytest -q
+pytest
 ```
 
-Runs the pytest suite (15 tests). All must pass.
+## Licença
 
-### Structure
+Distribuído sob a licenca MIT. Consulte o arquivo `LICENSE` do repositorio.
 
-```
-pyproject.toml         # Python project (setuptools, src layout)
-src/relatorio_compliance_lgpd/mapeamento.py  # LGPD scan and report
-src/relatorio_compliance_lgpd/__init__.py    # public API
-tests/test_mapeamento.py                     # pytest suite
-README.md                                      # this file
-BRIEF.md                                       # deliveries and verification
-```
+## Autor
 
-### License
-
-MIT.
-
-### Author
-
-Kelvin Oliveira.
+Kelvin Oliveira, https://github.com/KelvinOliveiraCode
+Portfolio: https://kelvinoliveiracode.github.io/portfolio/
