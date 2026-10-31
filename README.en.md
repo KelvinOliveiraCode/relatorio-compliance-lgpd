@@ -1,118 +1,115 @@
 # relatorio-compliance-lgpd
 
-<div align="center">
-
 **English** · [Português (Brasil)](README.md)
 
-</div>
-
-[![Python 3](https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/) [![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikit-learn)](https://scikit-learn.org/) [![pandas](https://img.shields.io/badge/pandas-150458?style=flat-square&logo=pandas)](https://pandas.pydata.org/) [![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=flat-square&logo=pytest)](https://docs.pytest.org/) [![MIT License](https://img.shields.io/badge/License-MIT-f4c430?style=flat-square)](LICENSE)
-
-### Projeto funcional ,  relatorio-compliance-lgpd
-
----
+[![Python 3](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](#) [![pytest](https://img.shields.io/badge/pytest-15%20tests-0A9EDC?style=flat-square&logo=pytest)](#) [![MIT License](https://img.shields.io/badge/License-MIT-f4c430?style=flat-square)](LICENSE)
 
 ## What it is
 
-Projeto funcional ,  relatorio-compliance-lgpd
+A **LGPD compliance report** generator built on personal-data mapping: it scans synthetic sources (CSV/JSON **in memory**), **detects personal-data fields** by name pattern (CPF, e-mail, phone, address, etc.), classifies risk and builds a report with the count per type. It is an educational lab in pure Python, with no dependencies.
 
----
+> Note: the previous README described an **ML fraud-detection** project (creditcard.csv, RandomForest) — it does not exist here. Corrected.
 
-## Quick Start
+## Status
 
-```bash
-# Clone and enter
-git clone https://github.com/KelvinOliveiraCode/<repo>.git
-cd <repo>
+An educational lab, working, with 15 tests.
 
-# Install dependencies
-# No requirements.txt detected
+## Features
 
-# Run the project
-python main.py
+- **In-memory CSV scan** (`varrer_csv`) and **JSON scan** (`varrer_json`): detect personal fields by name pattern.
+- **Field type detection** (`detectar_tipo_campo`): classifies personal-data patterns.
+- **Risk classification** by type and occurrences (`_classificar_risco`).
+- **Aggregated report** (`RelatorioLGPD`): total personal fields and counts per type; a `tem_dados_pessoais` flag.
+- **Generation, formatting and saving**: `gerar_relatorio`, `formatar_relatorio`, `salvar_relatorio`.
+- **CLI**: `python -m relatorio_compliance_lgpd.mapeamento` prints the report from the synthetic sources.
 
-# Run tests
-pytest
+## Architecture
+
+A single `mapeamento.py` module with scan functions (CSV/JSON), dataclass models (`CampoPessoal`, `FonteDado`, `RelatorioLGPD`) and report generation/output. The `main()` uses `fontes_sinteticas()` and prints the formatted result.
+
+```mermaid
+flowchart LR
+    CSV[CSV in memory] --> V[varrer_csv]
+    JSON[JSON in memory] --> W[varrer_json]
+    V --> D[detectar_tipo_campo - LGPD patterns]
+    W --> D
+    D --> R[gerar_relatorio - RelatorioLGPD]
+    R --> F[formatar_relatorio]
+    F --> S[salvar_relatorio / stdout]
 ```
 
-## How it works
+## Stack
 
-Estrutura limpa e modular com separação de responsabilidades.
+- Python ≥ 3.10, stdlib only (no dependencies)
+- dataclasses
+- pytest (dev)
 
----
+## Repository layout
 
-## Capabilities
+```
+relatorio-compliance-lgpd/
+├── pyproject.toml · BRIEF.md
+├── src/relatorio_compliance_lgpd/
+│   └── mapeamento.py   # scan, models and LGPD report
+├── tests/test_mapeamento.py
+└── LICENSE             # MIT
+```
 
-| Capacidade | Descrição |
-|------------|-------------|
-| Carregamento de Dados | Auto-download do TensorFlow creditcard.csv (284k transações) com cache local |
-| EDA e Visualização | Distribuição de classes, histogramas de Amount, heatmaps de correlação (matplotlib/seaborn) |
-| Pré-processamento | RobustScaler em Amount/Time, split estratificado, remoção de duplicatas |
-| Balanceamento | SMOTE oversampling (fallback: class_weight="balanced") |
-| Modelagem | LogisticRegression, RandomForest, ExtraTrees com RandomizedSearchCV (StratifiedKFold) |
-| Métricas | Accuracy, Precision, Recall, F1, ROC AUC, Specificity, Confusion Matrix |
-| Seleção | Score ponderado: Recall 40% + F1 30% + Precision 20% + Accuracy 10% |
-| Persistência | Serialização joblib para modelo, scaler e resultados completos |
+## Prerequisites and installation
 
+Python ≥ 3.10.
 
----
+```bash
+pip install -e .
+```
 
+## How to run
 
+CLI:
 
----
+```bash
+python -m relatorio_compliance_lgpd.mapeamento
+# prints the LGPD report from the synthetic sources
 
-## FAQ
+# or, after `pip install -e .`:
+relatorio-lgpd
+```
 
-<details>
-<summary><strong>What is this project?</strong></summary>
+Programmatic use:
 
-A Python study/project demonstrating core concepts.
+```python
+from relatorio_compliance_lgpd.mapeamento import fontes_sinteticas, gerar_relatorio, salvar_relatorio
 
-</details>
+relatorio = gerar_relatorio(fontes_sinteticas())
+salvar_relatorio(relatorio, "relatorio.txt")
+print(relatorio.total_campos_pessoais)
+```
 
-<details>
-<summary><strong>How do I run it?</strong></summary>
+## Tests and quality
 
-See [Quick Start](#quick-start) for copy-paste commands.
+Real run (verified by the agent):
 
-</details>
+```bash
+python -m pytest tests/
+# 15 passed
+```
 
-<details>
-<summary><strong>Are there tests?</strong></summary>
+## Technical decisions and trade-offs
 
-No automated tests in this repository.
+- **Name-pattern detection** instead of semantic inspection of values: simple and deterministic; it may produce false positives/negatives for atypical names.
+- **In-memory sources** (no dependency on fixed files): easy to test; the `main()` uses embedded synthetic sources.
 
-</details>
+## Known limitations and roadmap
 
-<details>
-<summary><strong>Can I use this in production?</strong></summary>
+- Detection covers common field-name patterns, not every possible naming.
+- The sources are synthetic; for real use, integrate your own CSVs/JSONs via `varrer_csv`/`varrer_json`.
 
-This is a **study/portfolio project**. Review and harden (auth, persistence, monitoring, etc.) before production use.
+## Development process
 
-</details>
+An individual project by Kelvin Oliveira, built with orchestrated AI agents and reviewed by the author. The LGPD mapping and the review are the author's.
 
+## License and author
 
+MIT — Copyright (c) 2026 Kelvin Rebelo de Oliveira.
 
----
-
-## Documentation
-
-- **Source Code** ,  Browse the `src/` directory for implementation details
-- **API Reference** ,  Inline docstrings + type hints
-- **Architecture Diagram** ,  See [architecture.mermaid](docs/architecture.mermaid) (if present)
-- **Changelog** ,  [CHANGELOG.md](CHANGELOG.md) (if present)
-- **Contributing** ,  [CONTRIBUTING.md](CONTRIBUTING.md) (if present)
-
-## License
-
-[MIT](LICENSE) ,  Kelvin Oliveira
-
----
-
-<div align="center">
-
-**Built with** · Python 3 + scikit-learn + pandas
-
-**Author** · [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfolio](https://kelvinoliveiracode.github.io/portfolio/)
-
-</div>
+**Author**: [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfolio](https://kelvinoliveiracode.github.io/portfolio/)
